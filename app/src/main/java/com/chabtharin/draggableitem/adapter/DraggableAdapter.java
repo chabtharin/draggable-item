@@ -3,6 +3,8 @@ package com.chabtharin.draggableitem.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chabtharin.draggableitem.R;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
 
 public class DraggableAdapter extends RecyclerView.Adapter<DraggableAdapter.DraggableViewHolder> {
     private final List<String> mDataSet;
-
     public DraggableAdapter(List<String> mDataSet) {
         this.mDataSet = mDataSet;
     }
@@ -24,6 +28,11 @@ public class DraggableAdapter extends RecyclerView.Adapter<DraggableAdapter.Drag
     @Override
     public DraggableViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_recyclerview_item, parent, false);
+        Animation animation = AnimationUtils.loadAnimation(parent.getContext(), R.anim.shake);
+        view.startAnimation(animation);
+        Executors.newSingleThreadScheduledExecutor().schedule(() ->
+            view.clearAnimation()
+        , 1000, TimeUnit.MILLISECONDS);
         return new DraggableViewHolder(view);
     }
 
